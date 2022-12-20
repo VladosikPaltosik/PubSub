@@ -14,6 +14,5 @@ class RedisClient:
     async def set_item(self, name: str, value: str) -> None:
         await self.client.set(name=name, value=value, ex=60)
 
-    async def get_items(self) -> list:
-        print(await self.client.keys())
+    async def get_items(self) -> list[str]:
         return await self.client.keys()

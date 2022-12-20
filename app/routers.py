@@ -34,7 +34,7 @@ async def record_signal(recording: Recording, redis_client: RedisClient = Depend
     return {'message': f'Vehicle {recording.vehicle_id} was recorded!'}
 
 
-@router.get('/vehicles/', description='Get all vehicles')
+@router.get('/vehicles/', description='Get all vehicles', response_model=list[str])
 async def get_all_vehicles(redis_client: RedisClient = Depends(get_redis_client)):
     try:
         vehicles = await redis_client.get_items()
@@ -45,4 +45,4 @@ async def get_all_vehicles(redis_client: RedisClient = Depends(get_redis_client)
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail='Service is unavailable!',
         )
-    return {'message': 'Vehicles was got successfully'}
+    return vehicles

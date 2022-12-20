@@ -2,6 +2,8 @@ from fastapi import status
 from httpx import AsyncClient
 import pytest
 
+from app.core.stream import RedisClient
+
 
 @pytest.mark.parametrize("recording", [
     {"vehicle_id": "1", "signals": {"speed_kmh": 100}},
@@ -23,6 +25,9 @@ async def test_record_signal_with_incorrect_data(recording: dict, client: AsyncC
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-async def test_get_vehicles(client: AsyncClient):
+async def test_get_vehicles(client: AsyncClient, redis_test: RedisClient):
+    await redis_test.set_item('some', 'value')
+
     response = await client.get("/vehicles/")
     assert response.status_code == status.HTTP_200_OK
+    assert response.json() == ['some']
